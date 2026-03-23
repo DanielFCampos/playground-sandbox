@@ -39,6 +39,62 @@ python --version && node --version && uv --version && gh --version && git --vers
 
 The host's `shared/` folder is bind-mounted into the container at `/workspace`. This is your working directory inside the container — files you create there are visible on the host, and vice versa.
 
+## How To: Clone, Detach, and Connect to Your Own Repo
+
+If you want to use this project as a starting point for your own sandbox, follow these steps to clone it, remove the link to the original repository, and optionally connect it to a new one.
+
+### 1. Clone the repository
+
+```bash
+git clone <repository_url>
+```
+
+Replace `<repository_url>` with the HTTPS or SSH URL of this repository.
+
+### 2. Navigate into the cloned directory
+
+```bash
+cd <repository_name>
+```
+
+### 3. Verify the current remote(s)
+
+```bash
+git remote -v
+```
+
+You should see something like:
+
+```
+origin  <repository_url> (fetch)
+origin  <repository_url> (push)
+```
+
+### 4. Remove the origin remote
+
+```bash
+git remote rm origin
+```
+
+### 5. Verify the detachment
+
+```bash
+git remote -v
+```
+
+This should return no output, confirming your local repository is no longer linked to the original remote.
+
+### 6. (Optional) Connect to a new remote repository
+
+Create a new empty repository on GitHub/GitLab, then add it as the new origin:
+
+```bash
+git remote add origin <new_repository_url>
+git push -u origin main
+```
+
+Your local copy is now an independent repository. You can commit, push, and pull against your own remote without any connection to the original source.
+
 ## VS Code Extensions
 
 These workspace extensions are pre-installed inside the container:
