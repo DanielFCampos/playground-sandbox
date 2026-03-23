@@ -39,6 +39,34 @@ python --version && node --version && uv --version && gh --version && git --vers
 
 The host's `shared/` folder is bind-mounted into the container at `/workspace`. This is your working directory inside the container — files you create there are visible on the host, and vice versa.
 
+### Keeping the Container Running
+
+By default, VS Code **stops** the container when you close the window. The next time you reopen the folder, the container has to start up again before you can work.
+
+To keep the container running in the background after you disconnect, add `shutdownAction` to `.devcontainer/devcontainer.json`:
+
+```jsonc
+{
+    "name": "Python Sandbox",
+    // ... existing configuration ...
+    "shutdownAction": "none"
+}
+```
+
+With this setting, closing VS Code leaves the container alive. Reconnecting is nearly instant — just open the folder and click **"Reopen in Container"**, or run `Dev Containers: Reopen in Container` from the Command Palette.
+
+When you want to free resources, stop the container manually:
+
+```bash
+# Podman
+podman stop <container-name>
+
+# Docker
+docker stop <container-name>
+```
+
+> **Note:** The container does **not** survive a host reboot. After restarting your machine, the container will need to start again as usual.
+
 ## How To: Clone, Detach, and Connect to Your Own Repo
 
 If you want to use this project as a starting point for your own sandbox, follow these steps to clone it, remove the link to the original repository, and optionally connect it to a new one.
