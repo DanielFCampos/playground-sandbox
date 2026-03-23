@@ -1,0 +1,54 @@
+{
+    "name": "Python Sandbox",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+
+    // Map container workspace to host's shared folder
+    "workspaceMount": "type=bind,source=${localWorkspaceFolder}/shared,target=/workspace",
+    "workspaceFolder": "/workspace",
+
+    "remoteUser": "vscode",
+    "containerUser": "vscode",
+    "updateRemoteUserUID": false,
+
+    // Podman rootless compatibility
+    // These flags are Podman-specific. For Docker, remove runArgs and set
+    // "updateRemoteUserUID": true — see README for details.
+    "runArgs": [
+        "--userns=keep-id",
+        "--security-opt=label=disable"
+    ],
+
+    // Persist gh CLI auth across container rebuilds
+    "mounts": [
+        "type=volume,source=sandbox-gh-config,target=/home/vscode/.config/gh"
+    ],
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.debugpy",
+                "ms-toolsai.jupyter",
+                "github.copilot",
+                "github.copilot-chat",
+                "eamodio.gitlens",
+                "charliermarsh.ruff",
+                "mtxr.sqltools"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "[python]": {
+                    "editor.defaultFormatter": "charliermarsh.ruff",
+                    "editor.formatOnSave": true
+                }
+            }
+        }
+    },
+
+    "postCreateCommand": "python --version && node --version && uv --version && gh --version && git --version",
+    "postStartCommand": "gh extension install github/gh-copilot 2>/dev/null || true"
+}
